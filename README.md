@@ -45,11 +45,10 @@ Golang_task4/
 │   └── is_login.go       # 登录验证中间件
 ├── 📁 TEST/              # 测试相关
 │   ├── testdata.md       # API 测试文档
+│   ├── sync_once_explanation.go  # sync.Once 演示代码
 │   └── *.png             # 测试截图
-├── 📁 CMD/               # 命令行工具（可选）
-│   ├── main.go           # CMD 入口
-│   └── dblink.go         # CMD 数据库连接
 ├── 📄 main.go            # 应用程序入口
+├── 📄 DB_Creater.sql     # 数据库创建脚本
 ├── 📄 go.mod             # Go 模块定义
 ├── 📄 go.sum             # 依赖锁定文件
 └── 📄 .gitignore         # Git 忽略文件
@@ -216,13 +215,48 @@ GET /comment/query/:post_id
 3. **创建控制器** - 在 `HANDLER/` 目录添加控制器
 4. **配置路由** - 在 `ROUTE/` 目录添加路由
 
-### 数据库迁移
+### 数据库管理
 
+#### 自动迁移
 项目启动时会自动创建所需的数据表：
 ```go
 // 在 main.go 中自动执行
 DAO.TableAutoMigrate()
 ```
+
+#### 手动数据库创建
+项目提供了 `DB_Creater.sql` 文件用于手动创建数据库和测试数据：
+
+**文件说明**：
+- `DB_Creater.sql` - 完整的数据库创建脚本，包含表结构和测试数据
+
+**脚本内容**：
+1. **表结构创建**：
+   - `users` 表 - 用户信息存储
+   - `posts` 表 - 博客文章存储
+   - `comments` 表 - 评论信息存储
+
+2. **外键约束**：
+   - 文章与用户的关联
+   - 评论与文章、用户的关联
+
+3. **测试数据**：
+   - 3个测试用户
+   - 4篇测试文章
+   - 5条测试评论
+
+**使用方法**：
+```sql
+-- 在 MySQL 中执行
+source DB_Creater.sql;
+-- 或
+mysql -u username -p database_name < DB_Creater.sql
+```
+
+**测试数据说明**：
+- 用户：alice_writer, bob_reader, charlie_dev
+- 文章：涵盖技术主题和旅行日记
+- 评论：模拟真实用户互动场景
 
 ## 🧪 测试
 
@@ -284,4 +318,3 @@ curl -X POST http://127.0.0.1:8080/user/register \
 3. 提交更改: `git commit -m 'Add some AmazingFeature'`
 4. 推送分支: `git push origin feature/AmazingFeature`
 5. 提交 Pull Request
-
